@@ -1,57 +1,82 @@
+# E-Commerce Chatbot
 
-# E-Commerce Chatbot README
+A Python chatbot with a Streamlit interface, NLTK text processing, and a TensorFlow/Keras intent classifier. It matches messages to predefined intents and selects a response from the corresponding response list.
 
-This repository contains code for a simple chatbot implemented in Python using TensorFlow and NLTK.
+## How it works
 
-## Overview
+1. Tokenize and lemmatize the user's message.
+2. Encode it as a bag-of-words vector.
+3. Predict intent probabilities with the trained neural network.
+4. Select a predefined response for the highest-ranked intent above the 0.25 threshold.
+5. Return a fallback message when no intent passes the threshold.
 
-The chatbot is trained to understand and respond to user queries based on predefined intents. It uses a bag-of-words approach to encode input sentences and a neural network for classification.
+Responses come from `intents.json`; the app does not generate free-form answers or connect to a store backend.
 
-## Requirements
+## Run locally
 
-- Python 3.9.7
-- TensorFlow
-- NLTK (Natural Language Toolkit)
-
-
-2. Install dependencies:
+The original project specifies Python 3.9.7. Dependency installation and the bundled model have not been verified across operating systems.
 
 ```bash
-pip install -r requirements.txt
+git clone https://github.com/Kelv-Ojo/Chat_bot.git
+cd Chat_bot
+python -m venv .venv
 ```
 
-## Usage
+Activate the environment:
 
-1. Train the model:
+```bash
+# macOS / Linux
+source .venv/bin/activate
+
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+```
+
+Install dependencies and launch the app from the repository root:
+
+```bash
+python -m pip install -r requirements.txt
+python -m streamlit run chatbotApp.py
+```
+
+The repository includes a trained model and its vocabulary/class files, so training is optional for an initial launch. The scripts download NLTK resources on startup and may need internet access on first use.
+
+## Train or customize
+
+Edit the patterns and responses in [intents.json](intents.json), then run:
 
 ```bash
 python ecomChatbot.py
 ```
 
-2. Run with the chatbot:
+Training runs for 200 epochs and overwrites `chatbot_model.h5`, `words.pkl`, and `classes.pkl`. Keep these three generated files together and restart Streamlit after retraining.
 
-```bash
-streamlit run chatbotApp.py  
-```
+Model architecture and training parameters are defined in `ecomChatbot.py`. Prediction and interface behavior are defined in `chatbotApp.py`.
 
-## Files
+## Repository contents
 
-- `intents.json`: Contains predefined intents and responses.
-- `ecomChatbot.py`: Script to train the chatbot model.
-- `chatbotApp.py`: Script to interact with the trained chatbot. with streamlit GUI.
-- `chatbot_model.h5`: Trained model file.
-- `words.pkl` and `classes.pkl`: Pickled files containing words and classes used for training.
+| File | Purpose |
+| --- | --- |
+| [chatbotApp.py](chatbotApp.py) | Streamlit interface and intent prediction |
+| [ecomChatbot.py](ecomChatbot.py) | Training pipeline |
+| [intents.json](intents.json) | Intent tags, example patterns, and responses |
+| chatbot_model.h5 | Saved neural network |
+| words.pkl / classes.pkl | Vocabulary and intent labels |
+| [requirements.txt](requirements.txt) | Pinned Python dependencies |
+| user.png / aiChatbot.png | Chat interface icons |
 
-## How it Works
+## Troubleshooting
 
-1. **Data Preprocessing**: Intents are loaded from `intents.json`, tokenized, lemmatized, and converted into a bag-of-words format.
-2. **Model Training**: A neural network model is defined and trained on the processed data.
-3. **Prediction**: Input sentences are tokenized and converted into bag-of-words vectors, and the model predicts the intent.
-4. **Response Generation**: Based on the predicted intent, a response is randomly chosen from the predefined responses in `intents.json`.
+- **Missing model, vocabulary, or images:** Launch from the repository root; the scripts use relative paths.
+- **Dependency installation fails:** The requirements include platform-specific TensorFlow packages. Compatibility needs checking for your operating system and Python version; a clean install has not yet been validated.
+- **NLTK resource download fails:** Check network access and the error's resource name.
+- **Unexpected responses:** Review intent examples and retrain after changing patterns. No held-out accuracy or benchmark is documented.
 
-## Customization
+## Current limitations
 
-- Modify `intents.json` to add or edit intents and responses.
-- Tweak model architecture and parameters in `train_chatbot.py` for better performance.
-- Extend functionalities by adding more functions in `chatbot.py`.
+The chatbot demonstrates intent classification and a conversational interface. It does not provide live order tracking, payments, inventory integration, or a measured production-quality accuracy guarantee.
 
+## Related work
+
+- [Sales Overview Dashboard](https://github.com/Kelv-Ojo/Dashboard-sales)
+- [Heart Disease Data Analysis](https://github.com/Kelv-Ojo/Heart-disease)
