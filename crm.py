@@ -1,7 +1,7 @@
 """Small local CRM. One enquiry per submitted message; no external calls."""
 import re
 import sqlite3
-from contextlib import contextmanager
+from contextlib import contextmanager, closing
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -11,10 +11,11 @@ STATUSES = ('New', 'In progress', 'Resolved')
 @contextmanager
 def database(path):
     Path(path).parent.mkdir(parents=True, exist_ok=True)
-    with sqlite3.connect(path) as connection:
-        connection.row_factory = sqlite3.Row
-        connection.execute('PRAGMA foreign_keys = ON')
-        yield connection
+    with closing(sqlite3.connect(path)) as connection:
+        with connection:
+            connection.row_factory = sqlite3.Row
+            connection.execute('PRAGMA foreign_keys = ON')
+            yield connection
 
 
 def initialise(path):

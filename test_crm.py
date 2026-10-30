@@ -1,4 +1,5 @@
 import json
+import sqlite3
 import tempfile
 import unittest
 from pathlib import Path
@@ -18,6 +19,20 @@ class CRMTests(unittest.TestCase):
 
     def tearDown(self):
         self.temp.cleanup()
+
+    def test_database_context_closes_after_commit_and_rollback(self):
+        with crm.database(self.db) as connection:
+            connection.execute('CREATE TABLE cleanup_probe (value INTEGER)')
+        with self.assertRaises(sqlite3.ProgrammingError):
+            connection.execute('SELECT 1')
+        with self.assertRaises(RuntimeError):
+            with crm.database(self.db) as failed_connection:
+                failed_connection.execute('INSERT INTO cleanup_probe VALUES (1)')
+                raise RuntimeError('Force transaction rollback')
+        with self.assertRaises(sqlite3.ProgrammingError):
+            failed_connection.execute('SELECT 1')
+        with crm.database(self.db) as check:
+            self.assertEqual(check.execute('SELECT COUNT(*) FROM cleanup_probe').fetchone()[0], 0)
 
     def test_contact_deduplication_and_idempotent_submission(self):
         first = crm.capture(self.db, 'Alex Demo', ' ALEX@EXAMPLE.COM ', 'first', self.result, 'one')

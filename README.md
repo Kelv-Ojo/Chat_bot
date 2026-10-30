@@ -1,5 +1,9 @@
 # Enquiry Desk — chatbot to CRM
 
+**Start here:** [Run the prototype](#run-locally) → [core tests](test_crm.py) → [model-mode notes](MODEL_SETUP.md)
+
+[The question](#the-question) · [Run locally](#run-locally) · [Data model](#data-model-and-decisions) · [HubSpot status](#hubspot-status) · [Verification](#verification-and-learning)
+
 A personal portfolio prototype extending [Kelvin's original e-commerce chatbot](https://github.com/Kelv-Ojo/Chat_bot).
 Built with Codex assistance, preserving the original intent dataset and providing
 an optional adapter for its existing TensorFlow model. All example customers and
@@ -16,22 +20,16 @@ for review and support follow-up reporting.
 
 ## Run locally
 
-Use **Python 3.11 or 3.12**, not the older Python supplied with macOS.
+Use **Python 3.11 or 3.12**. On Windows, activate the environment with `.venv\Scripts\activate` and use `python` in place of `python3.12`. Set `CRM_DB_PATH` through PowerShell (`$env:CRM_DB_PATH="data/demo.sqlite3"`) before the Streamlit command.
 
 ```sh
-cd /path/to/chatbot-crm
+git clone https://github.com/Kelv-Ojo/Chat_bot.git
+cd Chat_bot
 python3.12 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements-crm.txt
 python demo.py
 CRM_DB_PATH=data/demo.sqlite3 python -m streamlit run app.py --server.address 127.0.0.1
-```
-
-On Kelvin's Mac, the existing environment can also run it:
-
-```sh
-cd "/Users/kelvino/Documents/Codex/2026-10-18/create-a-scheduled-task-called-weekday/outputs/chatbot-crm"
-CRM_DB_PATH=data/demo.sqlite3 /opt/anaconda3/bin/python3 -m streamlit run app.py --server.address 127.0.0.1
 ```
 
 Open the URL printed by Streamlit. Inspect **CRM workspace**, then submit a question.
@@ -127,3 +125,22 @@ professional CRM-building experience.
 Original documentation: [README.original.md](README.original.md). Original data and
 model: `Kelv-Ojo/Chat_bot`. The original repository has no explicit licence file;
 no new licence is asserted over its existing assets.
+
+
+## Portfolio review notes
+
+Use the standard-library pattern matcher to review the enquiry workflow without the optional neural dependencies. It is exact intent matching, not a validated language model. The neural path is historical and unverified in this review. The HubSpot adapter has mock coverage, not a confirmed live connection. Use fictional demonstration data; no customer workload or time-saving result is claimed.
+
+## Business context and skills
+
+Support teams need enquiries to become traceable records with a clear next action. The prototype demonstrates this workflow using fictional data; it is not a deployed support service.
+
+**Skills demonstrated:** Python; SQLite transactions and queries; test-driven bug fixing; enquiry workflow design; human review and mock integration testing.
+
+## Dataset and visual walkthrough
+
+The existing [intent patterns and responses](intents.json) are the demo matcher’s source. The eight selected fictional messages in [demo.py](demo.py) exercise the workflow; they are not a representative evaluation dataset. Existing PNG assets belong to the earlier chatbot and are not screenshots of the new CRM workspace. Run the Streamlit application to inspect the current interface and review [the data model](#data-model-and-decisions) for the workflow structure.
+
+## Current core-test result
+
+All **11 CRM unit tests** passed in the local Windows review on 29 October 2026. The connection context now closes SQLite connections after commit or rollback, preventing Windows temporary-file cleanup failures. The regression test checks closure and rollback contents. This result covers CRM logic, not a validated neural model, LLM product or live HubSpot integration.
