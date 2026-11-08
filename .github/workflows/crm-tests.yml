@@ -25,4 +25,4 @@ jobs:
         with:
           python-version: '3.12'
       - name: Run isolated CRM and mocked HubSpot tests
-        run: python -m unittest discover -s . -p test_crm.py -v
+        run: python -m unittest -v test_crm test_operations

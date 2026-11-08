@@ -35,3 +35,9 @@ The 48-hour threshold is a demonstration rule, not a contractual SLA. Suggested 
 Import enquiries.csv with Text/CSV; set the ID to whole number and the three timestamp fields to Date/Time. Use a star model for expanded data: a fact table at enquiry grain with channel, category and date dimensions. For this single-table fixture, no joins are needed. Add channel/category slicers, total/open/unanswered cards, an open-queue table and a channel workload chart. All counts must match metrics.json with filters cleared. Recalculate averages for the selected rows rather than averaging channel averages. Use a fixed snapshot parameter for age calculations; never silently substitute today's date.
 
 A native PBIX dashboard has not been authored or validated for this extension. The SVG is a reproducibly generated chart, not a Power BI screenshot. The CSV, SQL and definitions are ready for building and checking that report.
+
+## Snapshot correction and collaboration
+
+Reply and resolution events count only when they occur at or before the reporting snapshot. Future openings are excluded; missing averages remain NULL and empty counts are zero. Run `python -m unittest -v test_operations`. Inputs must contain valid, timezone-consistent ISO timestamps with events no earlier than opening.
+
+A follow-up suitable for a genuine collaborator is input validation: reject invalid timestamps, replies/resolutions before opening and mixed timezone conventions, with independent fixtures. Also reconcile channel-summary exports at arbitrary snapshots; the current generator remains a fixed fixture. Review and shared implementation are welcome, but no co-author is claimed until another developer contributes substantive work and agrees to attribution.
